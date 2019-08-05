@@ -2,33 +2,24 @@ package com.afrikappakorps.rocketjump
 
 import android.os.Handler
 import android.os.Looper
-import android.os.Message
-import android.util.Log
 
 class GameLoop : Thread() {
-    enum class What { GET_GAMESTATE, INPUT }
-    private val gameModel = GameModel()
+    val gameModel = GameModel()
+    private var lastTick: Long = 0
     val handler = Handler(Looper.getMainLooper()) {
-        when (it.what) {
-            What.INPUT.ordinal -> {
-                //TODO: Handle touch input
-                Log.i("Touch coordinates", "${it.arg1},${it.arg2}")
-            }
-            What.GET_GAMESTATE.ordinal -> {
-                val message = Message.obtain()
-                message.obj = gameModel
-                it.replyTo.send(message)
-            }
-        }
+        //TODO: Handle touch input
         true
     }
     override fun run() {
         //Game loop proper
+        lastTick = System.currentTimeMillis()
         while (!isInterrupted) {
-            gameModel.lockInterruptibly()
-            try { if (!gameModel.update()) interrupt() }
-            finally { gameModel.unlock() }
-            sleep(100)
+            gameModel.lock.writeLock().lock()
+            try {
+                if (!gameModel.update((System.currentTimeMillis() - lastTick) / 10.0)) interrupt()
+                lastTick = System.currentTimeMillis()
+            } finally { gameModel.lock.writeLock().unlock() }
+            sleep(10)
         }
     }
 }

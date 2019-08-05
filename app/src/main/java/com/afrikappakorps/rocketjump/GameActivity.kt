@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
-import android.os.Messenger
 import android.view.Choreographer
 import android.view.MotionEvent
 import android.view.SurfaceHolder
@@ -32,35 +31,34 @@ class GameActivity : Activity() {
         override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
         override fun surfaceCreated(holder: SurfaceHolder) { renderThread.start() }
         override fun surfaceDestroyed(holder: SurfaceHolder) { renderThread.quitSafely() }
-        private inner class RenderThread(name: String) : HandlerThread(name), Choreographer.FrameCallback {
-            private val handler = Handler {
-                //Draw game state
+        private inner class RenderThread(name: String) : HandlerThread(name) {
+            private val backgroundPaint = Paint()
+            init {
+                backgroundPaint.color = Color.WHITE
+                backgroundPaint.style = Paint.Style.FILL
+            }
+            private val handler: Handler = Handler {
                 val canvas = holder.lockHardwareCanvas()
-                //TODO: Draw game state
+                gameLoop.gameModel.lock.readLock().lock()
+                try {
+                    canvas.drawPaint(backgroundPaint)
+                    //TODO: Draw game state
+                } finally { gameLoop.gameModel.lock.readLock().unlock() }
                 holder.unlockCanvasAndPost(canvas)
-                Choreographer.getInstance().postFrameCallback(this)
+                Choreographer.getInstance().postFrameCallback(trigger)
                 true
             }
-            override fun onLooperPrepared() {
-                Choreographer.getInstance().postFrameCallback(this)
-            }
-            override fun doFrame(time: Long) {
-                val message = Message.obtain(gameLoop.handler, GameLoop.What.GET_GAMESTATE.ordinal)
-                message.replyTo = Messenger(handler)
-                message.sendToTarget()
-            }
+            private val trigger = Choreographer.FrameCallback { handler.sendEmptyMessage(0) }
+            override fun onLooperPrepared() { Choreographer.getInstance().postFrameCallback(trigger) }
         }
     }
     private inner class PlayerTouchListener : View.OnTouchListener {
         override fun onTouch(view: View, event: MotionEvent): Boolean {
             if(event.action == MotionEvent.ACTION_DOWN) {
                 view.performClick()
-                val message = Message.obtain(
-                    gameLoop.handler,
-                    GameLoop.What.INPUT.ordinal,
-                    event.x.roundToInt(),
-                    event.y.roundToInt()
-                )
+                val message = Message.obtain(gameLoop.handler)
+                message.arg1 = event.x.roundToInt()
+                message.arg2 = event.y.roundToInt()
                 message.sendToTarget()
             }
             return true
