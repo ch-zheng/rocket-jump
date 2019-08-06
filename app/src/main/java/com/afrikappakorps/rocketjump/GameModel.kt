@@ -19,11 +19,11 @@ class GameModel {
         for (i in 0..9) blocks.add(Hitbox(i.toDouble(),0.0,1.0,1.0))
     }
     fun update(delta: Double): Boolean {
-        //Part 1: Physics
+        //Physics
         player.velocity.y -= 0.003 * delta
         player.move(delta)
         for (x in rockets) x.move(delta)
-        //Part 2: Collisions
+        //Collisions
         if (player.hitbox.x < 0) {
             player.hitbox.x = 0.0
             player.velocity.x = 0.0
@@ -52,18 +52,20 @@ class GameModel {
                 }
             }
         }
+        val rocketsToRemove = mutableSetOf<Entity>()
         for (x in rockets) {
             if (x.hitbox.x < 0 || x.hitbox.x > worldWidth) {
-                rockets.remove(x)
-                continue
-            }
-            for (y in blocks) {
-                if (y.contains(x.hitbox.x, x.hitbox.y)) {
-                    rockets.remove(x)
-                    player.velocity.y += 0.2 * delta
+                rocketsToRemove.add(x)
+            } else {
+                for (y in blocks) {
+                    if (y.contains(x.hitbox.x, x.hitbox.y)) {
+                        rocketsToRemove.add(x)
+                        player.velocity.y += 0.2 * delta
+                    }
                 }
             }
         }
+        for (x in rocketsToRemove) rockets.remove(x)
         return true
     }
     fun touch(x: Double, y: Double) {
@@ -71,7 +73,7 @@ class GameModel {
         val rocket = Entity(
             player.hitbox.x + player.hitbox.width / 2,
             player.hitbox.y + player.hitbox.height / 2,
-            0.5, 0.5
+            0.0, 0.0
         )
         rocket.velocity = Vector(x - rocket.hitbox.x, y - rocket.hitbox.y)
         rocket.velocity.magnitude = 0.2
