@@ -65,7 +65,9 @@ class GameModel {
                 }
             }
         }
-        for (x in rocketsToRemove) rockets.remove(x)
+        for (x in rocketsToRemove) {
+            rockets.remove(x)
+        }
         return true
     }
     fun touch(x: Double, y: Double) {
