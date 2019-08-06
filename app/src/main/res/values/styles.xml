@@ -7,8 +7,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <style name="Title">
-        <item name="android:textSize">42sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">72sp</item>
+        <item name="android:fontFamily">@font/teko_bold</item>
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Large</item>
     </style>
 </resources>

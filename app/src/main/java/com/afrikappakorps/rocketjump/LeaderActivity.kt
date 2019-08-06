@@ -1,5 +1,7 @@
 package com.afrikappakorps.rocketjump
 
+import android.app.Activity
+import android.app.DownloadManager
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.android.synthetic.main.leaderboard_entry.view.*
 
-class LeaderActivity : AppCompatActivity() {
+class LeaderActivity : Activity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: FirestoreRecyclerAdapter<LeaderEntry, LeaderAdapter.LeaderViewHolder>
