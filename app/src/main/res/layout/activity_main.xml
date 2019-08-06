@@ -10,8 +10,8 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="@string/app_name"
-        android:style="@style/Title"/>
+        android:text="@string/app_name" />
+        <!--android:style="@style/Title"/> -->
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
