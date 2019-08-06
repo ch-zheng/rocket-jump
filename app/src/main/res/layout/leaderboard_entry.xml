@@ -1,23 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:padding="8dp">
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:fontFamily="@font/teko_semibold"
+            android:textSize="36sp"
+            android:textColor="@android:color/white"
             android:id="@+id/pos_text"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_alignBaseline="@id/pos_text"
+            android:fontFamily="@font/teko_medium"
+            android:textSize="28sp"
+            android:textColor="@android:color/white"
             android:id="@+id/name_text"/>
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@id/pos_text"
+            android:layout_marginRight="8dp"
+            android:fontFamily="@font/teko_medium"
+            android:textSize="28sp"
+            android:textColor="@android:color/white"
             android:id="@+id/score_text"/>
 </RelativeLayout>
