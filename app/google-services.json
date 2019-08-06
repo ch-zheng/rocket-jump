@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1004119500904",
+    "firebase_url": "https://rocket-jump-leaderboard.firebaseio.com",
+    "project_id": "rocket-jump-leaderboard",
+    "storage_bucket": "rocket-jump-leaderboard.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004119500904:android:9a3f5c9a047cbb73",
+        "android_client_info": {
+          "package_name": "com.afrikappakorps.rocketjump"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004119500904-6uo2d9o4den23eq3ec98vt6ars81cd7d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD95CB_1RtL1dOC4RRy8vw7qu6nFiJ4PSE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004119500904-6uo2d9o4den23eq3ec98vt6ars81cd7d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
