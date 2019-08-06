@@ -2,17 +2,12 @@ package com.afrikappakorps.rocketjump
 
 import android.util.Log
 import java.util.concurrent.locks.ReentrantReadWriteLock
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.hypot
-import kotlin.math.min
-import kotlin.math.sign
-import kotlin.math.sin
+import kotlin.math.*
 
 class GameModel {
     val lock = ReentrantReadWriteLock()
     val worldWidth = 10
-    val player = Entity(1.0, 10.0, 1.0, 2.0)
+    val player = Entity(5.0, 10.0, 1.0, 2.0)
     val blocks = mutableSetOf<Hitbox>()
     val rockets = mutableSetOf<Entity>()
     init {
@@ -53,14 +48,39 @@ class GameModel {
             }
         }
         val rocketsToRemove = mutableSetOf<Entity>()
+
         for (x in rockets) {
+            val playerPosition = Vector(player.hitbox.x + player.hitbox.width/2, player.hitbox.y + player.hitbox.height /2)
+            val rocketPosition = Vector(x.hitbox.x, x.hitbox.y)
+            var difference = playerPosition - rocketPosition
+            //difference.x = abs(difference.x)
+            //difference.y = abs(difference.y)
             if (x.hitbox.x < 0 || x.hitbox.x > worldWidth) {
+                val multiplier = 1/difference.magnitude * .5
+                val angle = difference.direction
+                val deltaX = cos(angle) * multiplier * delta
+                val deltaY = sin(angle) * multiplier * delta
+                Log.d("HELLLLP", "WALL HIT")
+                Log.d("HELLLLP", "Angle ${angle}, multiplier ${multiplier}")
+                Log.d("HELLLLP", "${cos(angle)}, ${sin(angle)}")
+                Log.d("HELLLLP", "$deltaX , $deltaY")
+                player.velocity.x += deltaX
+                player.velocity.y += deltaY
                 rocketsToRemove.add(x)
             } else {
                 for (y in blocks) {
                     if (y.contains(x.hitbox.x, x.hitbox.y)) {
                         rocketsToRemove.add(x)
-                        player.velocity.y += 0.2 * delta
+                        val multiplier = 1/difference.magnitude * .5
+                        val angle = difference.direction
+                        val deltaX = cos(angle) * multiplier * delta
+                        val deltaY = sin(angle) * multiplier * delta
+                        Log.d("HELLLLP", "Angle ${angle}, multiplier ${multiplier}")
+                        Log.d("HELLLLP", "${cos(angle)}, ${sin(angle)}")
+                        Log.d("HELLLLP", "$deltaX , $deltaY")
+                        player.velocity.x += deltaX
+                        player.velocity.y += deltaY
+                        //player.velocity.y += 0.2 * delta
                     }
                 }
             }
