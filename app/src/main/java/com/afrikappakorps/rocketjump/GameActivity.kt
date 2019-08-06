@@ -1,12 +1,12 @@
 package com.afrikappakorps.rocketjump
 
 import android.app.Activity
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.os.Message
+import android.util.Log
 import android.view.Choreographer
 import android.view.MotionEvent
 import android.view.SurfaceHolder
@@ -32,17 +32,37 @@ class GameActivity : Activity() {
         override fun surfaceCreated(holder: SurfaceHolder) { renderThread.start() }
         override fun surfaceDestroyed(holder: SurfaceHolder) { renderThread.quitSafely() }
         private inner class RenderThread(name: String) : HandlerThread(name) {
+            //Canvas variables
             private val backgroundPaint = Paint()
+            private val bitmapOptions = BitmapFactory.Options()
             init {
-                backgroundPaint.color = Color.WHITE
+                backgroundPaint.color = Color.CYAN
                 backgroundPaint.style = Paint.Style.FILL
+                bitmapOptions.inScaled = false
             }
+            val characterSprite: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.character, bitmapOptions)
+            val blockSprite: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.metal_block, bitmapOptions)
+            val explosiveSprite: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.explosive, bitmapOptions)
+            fun Hitbox.getRect(pixels: Int) = Rect(
+                (x * pixels).roundToInt(),
+                (y * pixels).roundToInt(),
+                ((x + width) * pixels).roundToInt(),
+                ((y + height) * pixels).roundToInt()
+            )
+            //Drawing Handler
             private val handler: Handler = Handler {
                 val canvas = holder.lockHardwareCanvas()
                 gameLoop.gameModel.lock.readLock().lock()
                 try {
                     canvas.drawPaint(backgroundPaint)
-                    //TODO: Draw game state
+                    canvas.translate(0f, canvas.height.toFloat())
+                    canvas.scale(1f,-1f)
+                    val blockPixels: Int = canvas.width / gameLoop.gameModel.worldWidth
+                    for (x in gameLoop.gameModel.blocks)
+                        canvas.drawBitmap(blockSprite, null, x.getRect(blockPixels), null)
+                    for (x in gameLoop.gameModel.rockets)
+                        canvas.drawBitmap(explosiveSprite, null, x.hitbox.getRect(blockPixels), null)
+                    canvas.drawBitmap(characterSprite, null, gameLoop.gameModel.player.hitbox.getRect(blockPixels), null)
                 } finally { gameLoop.gameModel.lock.readLock().unlock() }
                 holder.unlockCanvasAndPost(canvas)
                 Choreographer.getInstance().postFrameCallback(trigger)
@@ -59,6 +79,7 @@ class GameActivity : Activity() {
                 val message = Message.obtain(gameLoop.handler)
                 message.arg1 = event.x.roundToInt()
                 message.arg2 = event.y.roundToInt()
+                message.obj = view
                 message.sendToTarget()
             }
             return true
