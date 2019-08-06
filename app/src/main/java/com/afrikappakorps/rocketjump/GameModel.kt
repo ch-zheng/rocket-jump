@@ -7,11 +7,13 @@ import kotlin.math.*
 class GameModel {
     val lock = ReentrantReadWriteLock()
     val worldWidth = 10
-    val player = Entity(5.0, 10.0, 1.0, 2.0)
+    val player = Entity(1.0, 2.0, 1.0, 2.0)
     val blocks = mutableSetOf<Hitbox>()
     val rockets = mutableSetOf<Entity>()
     init {
         for (i in 0..9) blocks.add(Hitbox(i.toDouble(),0.0,1.0,1.0))
+        blocks.add(Hitbox(4.0, 3.0, 6.0, 1.0))
+        blocks.add(Hitbox(0.0, 7.0, 4.0, 1.0))
     }
     fun update(delta: Double): Boolean {
         //Physics
@@ -56,11 +58,11 @@ class GameModel {
             //difference.x = abs(difference.x)
             //difference.y = abs(difference.y)
             if (x.hitbox.x < 0 || x.hitbox.x > worldWidth) {
-                val multiplier = 1/difference.magnitude * .5
+                val multiplier = 1/difference.magnitude * .21
                 val angle = difference.direction
                 val deltaX = cos(angle) * multiplier * delta
                 val deltaY = sin(angle) * multiplier * delta
-                Log.d("HELLLLP", "WALL HIT")
+                Log.d("HELLLLP", "WALL HIT ")
                 Log.d("HELLLLP", "Angle ${angle}, multiplier ${multiplier}")
                 Log.d("HELLLLP", "${cos(angle)}, ${sin(angle)}")
                 Log.d("HELLLLP", "$deltaX , $deltaY")
@@ -71,7 +73,7 @@ class GameModel {
                 for (y in blocks) {
                     if (y.contains(x.hitbox.x, x.hitbox.y)) {
                         rocketsToRemove.add(x)
-                        val multiplier = 1/difference.magnitude * .5
+                        val multiplier = 1/difference.magnitude * .21
                         val angle = difference.direction
                         val deltaX = cos(angle) * multiplier * delta
                         val deltaY = sin(angle) * multiplier * delta
