@@ -3,6 +3,7 @@
     <string name="play">Play</string>
     <string name="settings">Settings</string>
     <string name="leaderboard">Leaderboard</string>
+    <string name="topp">Top Players</string>
     <string name="paused">Paused</string>
     <string name="running">Running</string>
 </resources>

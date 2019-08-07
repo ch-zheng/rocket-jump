@@ -1,17 +1,17 @@
 package com.afrikappakorps.rocketjump
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.*
-import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
-import android.os.Message
+import android.os.*
 import android.util.Log
 import android.view.Choreographer
 import android.view.MotionEvent
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
+import android.widget.Button
+import com.google.common.primitives.UnsignedBytes.toInt
 import kotlin.math.PI
 import kotlin.math.roundToInt
 
@@ -26,6 +26,14 @@ class GameActivity : Activity() {
         holder.setKeepScreenOn(true)
         holder.addCallback(GameRenderer(holder))
         surfaceView.setOnTouchListener(PlayerTouchListener())
+        findViewById<Button>(R.id.end_button).setOnClickListener {
+            intent = Intent(this, LeaderActivity::class.java)
+            gameLoop.gameModel.lock.readLock().lock()
+            intent.putExtra("score", (gameLoop.gameModel.player.hitbox.y * 10000).toLong())
+            gameLoop.handler.post(Runnable {Looper.myLooper()!!.quit() })
+            gameLoop.interrupt()
+            startActivity(intent)
+        }
     }
     private inner class GameRenderer(val holder: SurfaceHolder) : SurfaceHolder.Callback {
         private val renderThread = RenderThread("Rendering")
