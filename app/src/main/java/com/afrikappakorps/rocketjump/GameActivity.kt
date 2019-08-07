@@ -51,46 +51,46 @@ class GameActivity : Activity() {
                 gameLoop.gameModel.lock.readLock().lock()
                 try {
                     canvas.drawPaint(backgroundPaint)
-                    //canvas.translate(0f, canvas.height.toFloat())
-                    //canvas.scale(1f,-1f)
                     val bp: Int = canvas.width / gameLoop.gameModel.worldWidth
                     //Draw blocks
                     for (x in gameLoop.gameModel.blocks) {
                         val rect = Rect(
-                            bp * x.x.roundToInt(),
-                            canvas.height - bp * (x.y + x.height).roundToInt(),
-                            bp * (x.x + x.width).roundToInt(),
-                            canvas.height - bp * x.y.roundToInt()
+                            (x.x * bp).roundToInt(),
+                            canvas.height - (x.y * bp + x.height * bp).roundToInt(),
+                            (x.x * bp + x.width * bp).roundToInt(),
+                            canvas.height - (x.y * bp).roundToInt()
                         )
                         canvas.drawBitmap(blockSprite, null, rect, null)
                     }
                     //Draw rockets
                     for (x in gameLoop.gameModel.rockets) {
-                        //canvas.save()
+                        canvas.save()
                         val rect = Rect(
-                            bp * (x.hitbox.x - 0.5).roundToInt(),
-                            canvas.height - bp * (x.hitbox.y + 0.25).roundToInt(),
-                            bp * (x.hitbox.x + 0.5).roundToInt(),
-                            canvas.height - bp * (x.hitbox.y - 0.25).roundToInt()
+                            (x.hitbox.x * bp - 0.7 * bp).roundToInt(),
+                            canvas.height - (x.hitbox.y * bp + 0.25 * bp).roundToInt(),
+                            (x.hitbox.x * bp + 0.7 * bp).roundToInt(),
+                            canvas.height - (x.hitbox.y * bp - 0.25 * bp).roundToInt()
                         )
-                        //TODO: Rotate by proper angle
-                        //canvas.rotate(0f, bp * x.hitbox.x.toFloat(), bp * x.hitbox.y.toFloat())
+                        canvas.rotate(
+                            (-x.velocity.direction * 180 / PI).toFloat(),
+                            (bp * x.hitbox.x).toFloat(), canvas.height - (bp * x.hitbox.y).toFloat()
+                        )
                         canvas.drawBitmap(explosiveSprite, null, rect, null)
-                        //canvas.restore()
+                        canvas.restore()
                     }
                     //Draw player
                     val player = gameLoop.gameModel.player
                     canvas.drawBitmap(launcherSprite, null, Rect(
-                        bp * (player.hitbox.x - 0.5).roundToInt(),
-                        canvas.height - bp * (player.hitbox.y + 0.25).roundToInt(),
-                        bp * (player.hitbox.x + 0.5).roundToInt(),
-                        canvas.height - bp * (player.hitbox.y - 0.25).roundToInt()
+                        (player.hitbox.x * bp + player.hitbox.width / 2 * bp - 0.6 * bp).roundToInt(),
+                        canvas.height - (player.hitbox.y * bp + player.hitbox.height / 2 * bp + 0.25 * bp).roundToInt(),
+                        (player.hitbox.x * bp + player.hitbox.width / 2 * bp + 0.6 * bp).roundToInt(),
+                        canvas.height - (player.hitbox.y * bp + player.hitbox.height / 2 * bp - 0.25 * bp).roundToInt()
                     ), null)
                     canvas.drawBitmap(characterSprite, null, Rect(
-                        bp * player.hitbox.x.roundToInt(),
-                        canvas.height - bp * (player.hitbox.y + player.hitbox.height).roundToInt(),
-                        bp * (player.hitbox.x + player.hitbox.width).roundToInt(),
-                        canvas.height - bp * player.hitbox.y.roundToInt()
+                        (player.hitbox.x * bp).roundToInt(),
+                        canvas.height - (player.hitbox.y * bp + player.hitbox.height * bp).roundToInt(),
+                        (player.hitbox.x * bp + player.hitbox.width * bp).roundToInt(),
+                        canvas.height - (player.hitbox.y * bp).roundToInt()
                     ), null)
                 } finally { gameLoop.gameModel.lock.readLock().unlock() }
                 holder.unlockCanvasAndPost(canvas)
