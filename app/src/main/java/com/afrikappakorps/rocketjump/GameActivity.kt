@@ -81,7 +81,8 @@ class GameActivity : Activity() {
                         )
                         canvas.rotate(
                             (-x.velocity.direction * 180 / PI).toFloat(),
-                            (bp * x.hitbox.x).toFloat(), canvas.height - (bp * x.hitbox.y).toFloat()
+                            (bp * x.hitbox.x).toFloat(),
+                            canvas.height - (bp * x.hitbox.y).toFloat()
                         )
                         canvas.drawBitmap(explosiveSprite, null, rect, null)
                         canvas.restore()
